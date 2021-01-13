@@ -12,7 +12,7 @@ class Department(Base):
     __tablename__ = 'department'
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    employee = relationship('Employee', uselist=False, backref='department', cascade='delete,all')
+    employee = relationship('Employee', uselist=False)
 
 class Employee(Base):
     __tablename__ = 'employee'

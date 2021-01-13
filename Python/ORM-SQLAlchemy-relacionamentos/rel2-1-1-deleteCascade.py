@@ -14,6 +14,9 @@ class Department(Base):
     name = Column(String)
     employee = relationship('Employee', uselist=False, back_populates='department', cascade="all, delete", passive_deletes=True)
 
+    def __repr__(self):
+        return f'Department=(id={self.id}, name={self.name}, employee={self.employee})'
+
 class Employee(Base):
     __tablename__ = 'employee'
     id = Column(Integer, primary_key=True)
@@ -21,7 +24,11 @@ class Employee(Base):
     departament_id = Column(Integer, ForeignKey('department.id', ondelete='CASCADE'), unique=True)
     department = relationship('Department', back_populates='employee')
 
-# Um departamento possui um funcionário, e um funcionário só pode estar em um departamento
+    def __repr__(self):
+        return f'Employee=(id={self.id}, name={self.name}, departament_id={self.departament_id})'
+
+# Um departamento possui um funcionário, e um funcionário só pode estar em um departamento. Se o
+# departamento for excluído todos empregados associados a ele serão excluídos também
 
 
 Base.metadata.create_all(engine)
@@ -38,7 +45,6 @@ Base.metadata.create_all(engine)
 # session.commit()
 # session.close()
 
-
 # array = session.query(Department).all()
 # for i in array:
 #     print('\n', i.id, i.name, i.employee.id, i.employee.name)
@@ -51,9 +57,10 @@ Base.metadata.create_all(engine)
 # session.commit()
 # session.close()
 
-# session.delete(Department(id=1, name='IT'))
-# session.commit()
-# session.close()
-# session.delete(Department(id=2, name='RH'))
-# session.commit()
-# session.close()
+it_department = session.query(Department).filter(Department.id == 1).first()
+session.delete(it_department)
+session.commit()
+session.close()
+
+# from pprint import pprint
+# pprint(session.query(Department).all())

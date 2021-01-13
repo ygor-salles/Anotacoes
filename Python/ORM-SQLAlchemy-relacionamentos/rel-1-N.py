@@ -41,7 +41,6 @@ Base.metadata.create_all(engine)
 # session.close()
 
 array = session.query(Department).all()
-
 for i in array:
     print('\n', i.id, i.name)
     for j in i.employees:
