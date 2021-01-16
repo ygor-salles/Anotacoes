@@ -10,13 +10,18 @@ https://docs.sqlalchemy.org/en/13/orm/relationships.html
 
 https://www.pythoncentral.io/sqlalchemy-orm-examples/
 
-### Anotações:
+### bancos:
 
-* nullable=False representa not null do SQL, o qual pode ser adicionando para representar cardinalidades 0-1 ou 0-N. E nullable=True para cardinalidades 1-1 ou 1-N. 
-Segue um exmplo onde o nullable deve ser descrito
+* No postgreSQL
 
 ```python
-Column('department_id', ForeignKey('department.id'), primary_key=True, nullable=False)
+engine = create_engine('postgresql+psycopg2://postgres:123456@localhost:5432/teste', echo=False)
+```
+
+* No SQLite
+
+```python
+engine = create_engine('sqlite:///test.db', echo=True)
 ```
 
 ## Ferramenta para gerar o código a partir do banco já criado: SQLAcodegen
