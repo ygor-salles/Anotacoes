@@ -1,0 +1,13 @@
+São opções para as chaves estrangeiras, tentando simplificar ao máximo:
+
+RESTRICT: Rejeita a atualização ou exclusão de um registro da tabela pai, se houver registros na tabela filha.
+
+CASCADE: Atualiza ou exclui os registros da tabela filha automaticamente, ao atualizar ou excluir um registro da tabela pai.
+
+SET NULL: Define como null o valor do campo na tabela filha, ao atualizar ou excluir o registro da tabela pai.
+
+NO ACTION: Equivalente ao RESTRICT.
+
+Há ainda o SET DEFAULT: Define o valor da coluna na tabela filha, como o valor definido como default para ela, ao excluir ou atualizar um registro na tabela pai.
+
+mais informações: https://dev.mysql.com/doc/refman/5.7/en/create-table-foreign-keys.html
