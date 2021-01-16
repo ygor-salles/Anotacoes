@@ -29,7 +29,7 @@ class Employee(Base):
 
 # Um departamento possui um funcionário, e um funcionário só pode estar em um departamento. Se o
 # departamento for excluído todos empregados associados a ele serão excluídos também
-
+# pode-se associar com back-populates ou backref. No caso do backref deve se colocar em apenas uma tabela
 
 Base.metadata.create_all(engine)
 

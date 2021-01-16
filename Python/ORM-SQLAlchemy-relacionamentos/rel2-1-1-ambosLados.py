@@ -22,7 +22,6 @@ class Employee(Base):
     department = relationship('Department', back_populates='employee')
 
 # Um departamento possui um funcionário, e um funcionário só pode estar em um departamento
-# pode-se associar com back-populates ou backref 
 
 Base.metadata.create_all(engine)
 
