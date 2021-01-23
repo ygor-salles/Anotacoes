@@ -30,5 +30,5 @@ https://pypi.org/project/sqlacodegen/
 
 * Comando para gerar o mapeamento do banco em python com SQLAcodegen
 ``` bash
-sqlacodegen –schema nomeSchema –outfile model.py postgresql+psycopg2://postgres:123456@localhost:5432/nomeBanco
+sqlacodegen –-schema nomeSchema –-outfile model.py postgresql+psycopg2://postgres:123456@localhost:5432/nomeBanco
 ```
