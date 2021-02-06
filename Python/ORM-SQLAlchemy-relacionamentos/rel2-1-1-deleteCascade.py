@@ -50,17 +50,17 @@ Base.metadata.create_all(engine)
 # session.commit()
 # session.close()
 
-# it_department = session.query(Department).filter(Department.id == 1).first()
-# session.delete(it_department)
-# session.commit()
-# session.close()
+it_department = session.query(Department).filter(Department.id == 2).first()
+session.delete(it_department)
+session.commit()
+session.close()
 
 # from pprint import pprint
 # pprint(session.query(Department).all())
 # session.commit()
 # session.close()
 
-from pprint import pprint
-pprint(session.query(Employee).all())
-session.commit()
-session.close()
+# from pprint import pprint
+# pprint(session.query(Employee).all())
+# session.commit()
+# session.close()
