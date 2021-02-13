@@ -1,6 +1,7 @@
 from mongoengine import *
 from mongoengine.connection import connect
 from mongoengine.document import Document
+from mongoengine.errors import DoesNotExist
 from mongoengine.fields import FloatField, IntField, ReferenceField, StringField
 connect('teste')
 
@@ -24,10 +25,14 @@ class Pessoa(Document):
 # pessoa1.save()
 
 # LISTAR -----------------------------------------------------
-# listaPessoa = Pessoa.objects()
-# for pessoa in listaPessoa:
-#     print(pessoa.email, pessoa.nome, pessoa.idade, 
-#         pessoa.produto.codigo, pessoa.produto.nome, pessoa.produto.preco)
+listaPessoa = Pessoa.objects()
+try:
+    for pessoa in listaPessoa:
+        print(pessoa.email, pessoa.nome, pessoa.idade, 
+            pessoa.produto.codigo, pessoa.produto.nome, pessoa.produto.preco)
+except DoesNotExist:
+    for pessoa in listaPessoa:
+        print(pessoa.email, pessoa.nome, pessoa.idade, 'SEM PRODUTO')
 
 # LISTAR POR ID -----------------------------------------------------
 # obj = Pessoa.objects(email='ygor@unifei.edu.br').first()
@@ -39,6 +44,6 @@ class Pessoa(Document):
 
 
 # DELETAR -----------------------------------------------------
-# Produto.objects(nome='Paçoca').delete()
+Produto.objects(nome='Salgadinho').delete()
 
-Pessoa.objects(email='ygor@unifei.edu.br').delete()
+# Pessoa.objects(email='ygor@unifei.edu.br').delete()
