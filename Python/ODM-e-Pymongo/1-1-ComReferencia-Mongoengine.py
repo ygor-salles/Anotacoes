@@ -20,18 +20,21 @@ class Pessoa(Document):
 # INSERÇÃO -----------------------------------------------------
 # prod1 = Produto(codigo=1, nome='Salgadinho', preco=0.50)
 # prod1.save()
-
 # pessoa1 = Pessoa(email='ygor@unifei.edu.br', nome='Ygor Salles', idade=24, produto=prod1)
 # pessoa1.save()
 
+# prod2 = Produto(codigo=2, nome='Pamonha', preco=2.50)
+# prod2.save()
+# pessoa2 = Pessoa(email='cassia@unifei.edu.br', nome='Cassia Rodrigues', idade=20, produto=prod2)
+# pessoa2.save()
+
 # LISTAR -----------------------------------------------------
 listaPessoa = Pessoa.objects()
-try:
-    for pessoa in listaPessoa:
+for pessoa in listaPessoa:
+    try:
         print(pessoa.email, pessoa.nome, pessoa.idade, 
             pessoa.produto.codigo, pessoa.produto.nome, pessoa.produto.preco)
-except DoesNotExist:
-    for pessoa in listaPessoa:
+    except DoesNotExist:
         print(pessoa.email, pessoa.nome, pessoa.idade, 'SEM PRODUTO')
 
 # LISTAR POR ID -----------------------------------------------------
@@ -44,6 +47,6 @@ except DoesNotExist:
 
 
 # DELETAR -----------------------------------------------------
-Produto.objects(nome='Salgadinho').delete()
+# Produto.objects(nome='Salgadinho').delete()
 
 # Pessoa.objects(email='ygor@unifei.edu.br').delete()
