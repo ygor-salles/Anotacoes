@@ -4,6 +4,12 @@ link:
 
 https://www.npmjs.com/package/typeorm-model-generator
 
+* Gerando model a partir do postgreSQL local com npx:
+
+```bash
+npx typeorm-model-generator -h localhost -d nome_banco -u usuario -x senha -e postgres -o . -s public
+```
+
 * Gerando model a partir do postgreSQL local
 
 ```bash
