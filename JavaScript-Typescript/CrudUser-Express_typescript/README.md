@@ -1,9 +1,9 @@
-# Crud
+# Sistema-Delivery-Marmita
 
 * Instalar as dependencias:
 
 ```bash
-yarn add
+yarn
 ```
 
 * Rodar o projeto
@@ -12,12 +12,10 @@ yarn add
 yarn dev
 ```
 
-*
-
 * Criar uma migration:
 
 ```bash
-yarn typeorm migration:create -n CreateUsers
+yarn typeorm migration:create -n CreateExample
 ```
 
 * Rodar as migrations
@@ -27,8 +25,6 @@ yarn typeorm migration:run
 ```
 
 * Desfazer alterações da migration
-
-* Atualizar uma migration
 
 ```bash
 yarn typeorm migration:revert

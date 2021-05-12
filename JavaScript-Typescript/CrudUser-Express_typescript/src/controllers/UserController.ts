@@ -1,93 +1,89 @@
 import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
-import { UsersRepository } from "../repositories/UsersRepository";
-import * as yup from 'yup'
+import * as yup from 'yup';
+import { UserService } from "../services/UserService";
 
 class UserController {
     async create(req: Request, resp: Response) {
-        const { name, email } = req.body
+        // Dados recebidos na requisição
+        const { name, email, password, confirm_password, admin } = req.body
 
+        // Validação dos campos recebidos no corpo da requisição
         const schema = yup.object().shape({
             name: yup.string().required('Nome é obrigatório'),
-            email: yup.string().email().required('Email incorreto')
+            email: yup.string().email('E-mail incorreto').required('E-mail é obrigatório'),
+            password: yup.string().required('Senha é obrigatória'),
+            confirm_password: yup.string().required('Confirmação de senha é obrigatória'),
+            admin: yup.bool().required('Validação de campo administrador necessária')
         })
-
         try {
             await schema.validate(req.body, { abortEarly: false })
         } catch (error) {
             return resp.status(400).json({ message: error })
         }
 
-        const connectionUser = getCustomRepository(UsersRepository);
-
-        const userAlreadyExists = await connectionUser.findOne({ email })
-
-        if (userAlreadyExists) {
-            return resp.status(404).json({ message: 'User already exists!' })
+        if (password !== confirm_password) {
+            return resp.status(400).json({ message: 'As senhas não conferem' })
         }
 
-        const user = connectionUser.create({ name, email })
-        await connectionUser.save(user)
-        return resp.status(201).json(user)
+        // Conexão com o banco de dados chamando a service
+        const userService = new UserService()
+        try {
+            const user = await userService.create(name, email, password, admin)
+            if(user.status === 201){
+                return resp.status(201).json(user.obj);
+            } else {
+                return resp.status(user.status).json({message: user.message})
+            }            
+        } catch (error) {
+            return resp.status(400).json({ message: 'Falha de conexão com o banco de dados' })
+        }
+
     }
 
     async ready(req: Request, resp: Response) {
-        const connectionUser = getCustomRepository(UsersRepository)
-        const allUsers = await connectionUser.find()
-        return resp.json(allUsers)
+        const userService = new UserService()
+        try {
+            const allUsers = await userService.ready()
+            return resp.json(allUsers)
+        } catch (error) {
+            return resp.status(400).json({ message: 'Falha de conexão com o banco de dados' })
+        }
     }
 
-    async readyByEmail(req: Request, resp: Response) {
-        const { email } = req.body
-
-        const schema = yup.object().shape({
-            email: yup.string().email('Email is required')
-        })
+    async readyById(req: Request, resp: Response) {
+        const { id } = req.params
+        const userService = new UserService()
         try {
-            await schema.validate(req.body, { abortEarly: false })
+            const user = await userService.readyById(id)
+            if(user.status === 200){
+                return resp.json(user.obj)
+            }
+            return resp.status(user.status).json({ message: user.message })
         } catch (error) {
-            return resp.status(400).json({ message: error })
+            return resp.status(400).json({ message: 'Falha de conexão com o banco de dados' }) 
         }
-
-        const connectionUser = getCustomRepository(UsersRepository)
-        const user = await connectionUser.findOne({ email })
-        if (user) {
-            return resp.json(user)
-        }
-        else {
-            return resp.status(404).json({ message: 'User already exists!' })
-        }
-
     }
 
-    async delete(req: Request, resp: Response) {
-        const { email } = req.body
-
-        const schema = yup.object().shape({
-            email: yup.string().email('Email is required')
-        })
+    async softDelete(req: Request, resp: Response) {
+        const { id } = req.params
+        const userService = new UserService()
         try {
-            await schema.validate(req.body, { abortEarly: false })
+            const user = await userService.softDelete(id)
+            return resp.status(user.status).json({ message: user.message })
         } catch (error) {
-            return resp.status(400).json({ message: error })
-        }
-
-        const connectionUser = getCustomRepository(UsersRepository)
-        const user = await connectionUser.findOne({ email })
-        if (user) {
-            await connectionUser.delete(user.id)
-            return resp.status(200).json({ message: 'User remove success!' })
-        }
-        else {
-            return resp.status(400).json({ message: 'User already exists!' })
+            return resp.status(400).json({ message: 'Falha de conexão com o banco de dados' })
         }
     }
 
     async update(req: Request, resp: Response) {
-        const { email } = req.body
+        const { id } = req.params
+        const { name, email, password, confirm_password, admin } = req.body
 
         const schema = yup.object().shape({
-            email: yup.string().email('Email is required')
+            name: yup.string().required('Nome é obrigatório'),
+            email: yup.string().email().required('E-mail é obrigatório'),
+            password: yup.string().required('Senha é obrigatória'),
+            confirm_password: yup.string().required('Confirmação de senha é obrigatória') 
         })
         try {
             await schema.validate(req.body, { abortEarly: false })
@@ -95,16 +91,18 @@ class UserController {
             return resp.status(400).json({ message: error })
         }
 
-        const connectionUser = getCustomRepository(UsersRepository)
-        const user = await connectionUser.findOne({ email })
-        
-        if (user) {
-            await connectionUser.update(user.id, req.body)
-            return resp.status(200).json({ message: 'User update success' })
+        if (password !== confirm_password) {
+            return resp.status(400).json({ message: 'As senhas não conferem' })
         }
 
-        return resp.status(404).json({ message: 'User not found' })
+        const userService = new UserService()
+        try {
+            const user = await userService.update(id, name, email, password, admin)
+            return resp.status(user.status).json({ message: user.message })
+        } catch (error) {
+            return resp.status(400).json({ message: 'Falha de conexão com o banco de dados' }) 
+        }
     }
 }
 
-export { UserController }
+export { UserController };
