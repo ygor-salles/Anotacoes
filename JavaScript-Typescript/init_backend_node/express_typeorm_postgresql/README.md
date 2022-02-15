@@ -144,7 +144,7 @@ services:
 - Note que as variáveis `BD_USERNAME`, `BD_DATABASE`, `BD_PASSWORD` e `BD_PORT` são variáveis que devem
   estar setadas no arquivo `.env` com seus respectivos valores
 
-- Basta agora executar o comando `docker-compose up` que uma nova imagem do docker com o banco postgresql estará executando para ser utilizada posteriormente na sua aplicação. Você poderá visualizar o schema do banco postgresql com algum database-studio como `dbeaver` ou `beekeeper` setando as mesmas credenciais definidas em `.env`
+- Verificar se nenhum processo ou outro banco esteja executando na mesma porta definida na variável de ambiente `BD_PORT`, caso não tenha basta agora executar o comando `docker-compose up` que uma nova imagem do docker com o banco postgresql estará executando para ser utilizada posteriormente na sua aplicação. Você poderá visualizar o schema do banco postgresql com algum database-studio como `dbeaver` ou `beekeeper` setando as mesmas credenciais definidas em `.env`
 
 ## Instalando ORM e dependencias para conectar ao banco
 
