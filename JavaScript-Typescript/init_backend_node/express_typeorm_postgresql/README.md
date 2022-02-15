@@ -1,4 +1,4 @@
-# Projeto backend
+# Projeto backend typescript, express, typeorm e postgresql 2021/2022
 
 Inicializando e configurando uma aplicação backend com typescript, express, typeorm e postgresql
 
