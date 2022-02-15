@@ -104,7 +104,7 @@ yarn dev
 
 ## GITHUB, GITIGNORE
 
-- Caso queira subir o projeto para o github ou qualquer outro repositório remoto, criar um arquivo na raiz do projeto com o nome `.gitIgnore`
+- Caso queira subir o projeto para o github, criar um arquivo na raiz do projeto com o nome `.gitIgnore` nele será definido o que não será enviado para a repositório remoto, no caso o github
 - Dentro desse arquivo colocar: /node_modules (Para que não suba a pasta node_modules para o github).
 - Caso utilize variáveis de ambiente colocar também o `.env` para que não suba no github
 - Segue um exemplo de um arquivo `.gitIgnore`:
