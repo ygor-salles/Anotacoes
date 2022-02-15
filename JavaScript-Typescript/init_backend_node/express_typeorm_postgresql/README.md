@@ -22,7 +22,7 @@ yarn add typescript -D
 yarn tsc --init
 ```
 
-- Em tsconfig.json definir o atributo strict como false
+- Em `tsconfig.json` definir o atributo `strict` como false
 
 - Instalar ts-node para o javascript entender o typescript
 
@@ -66,7 +66,7 @@ yarn add express
 yarn add @types/express -D
 ```
 
-- No package.json adicionar em baixo de license o script de startar servidor:
+- No `package.json` adicionar em baixo de `license` o script de startar servidor:
 
 ```json
 "scripts": {
@@ -77,7 +77,7 @@ yarn add @types/express -D
 - As flags utilizadas no exemplo: `--files`, `--transpile-only` e `--ignore-watch node_modules` são opcionais, conforme evolução do projeto algumas delas serão essencias.
   Para mais informações sobre essas flags consulte a documentação oficial do nodeJS.
 
-- Criar uma pasta src com arquivo server.ts - Escolher a porta que irá startar o server, neste exemplo será utilizado das variáveis de ambiente a variável `PORT`
+- Criar uma pasta `src` com arquivo `server.ts` - Escolher a porta que irá startar o server, neste exemplo será utilizado das variáveis de ambiente a variável `PORT`
 
 ```ts
 import "dotenv/config";
@@ -90,7 +90,7 @@ app.listen(process.env.PORT || 4000, () =>
 );
 ```
 
-- O projeto express já estará funcionando na porta conforme definido na variável de ambiente PORT, caso não exista essa variável em `.env` será startado como porta default a porta 4000. Basta rodar no terminal o comando:
+- O projeto express já estará funcionando na porta conforme definido na variável de ambiente `PORT`, caso não exista essa variável em `.env` será startado como porta default a porta 4000. Basta rodar no terminal o comando:
 
 ```bash
 yarn dev
@@ -98,9 +98,20 @@ yarn dev
 
 ## GITHUB, GITIGNORE
 
-- Caso queira subir o projeto para o github ou qualquer outro repositório remoto, criar um arquivo na raiz do projeto com o nome .gitIgnore
+- Caso queira subir o projeto para o github ou qualquer outro repositório remoto, criar um arquivo na raiz do projeto com o nome `.gitIgnore`
 - Dentro desse arquivo colocar: /node_modules (Para que não suba a pasta node_modules para o github).
 - Caso utilize variáveis de ambiente colocar também o `.env` para que não suba no github
+- Segue um exemplo de um arquivo `.gitIgnore`:
+
+```.gitIgnore
+node_modules
+
+.env
+
+build
+
+coverage
+```
 
 ## Docker compose - subindo imagem do banco postgresql
 
@@ -157,11 +168,14 @@ module.exports = {
 - Dentro de `src` criar o diretório `database/index.ts`, no `index.ts` colocar a seguinte configuração:
 
 ```ts
-import { createConnection } from "typeorm";
-createConnection();
+import { createConnection } from 'typeorm';
+
+createConnection()
+  .then(() => console.log('Database connection successful'))
+  .catch(err => console.log('Database connection failed ->', err.message || err));
 ```
 
-- Em server.ts chamar o database e o reflect-metadata:
+- Em `server.ts` chamar o database e o reflect-metadata:
 
 ```ts
 import "dotenv/config";
@@ -177,7 +191,7 @@ app.listen(process.env.PORT || 4000, () =>
 
 - Dentro de `database` criar o diretório `migrations`
 
-- Em package.json no objeto scripts, criar também o atributo typeorm o qual defini a CLI:
+- Em `package.json` no objeto `scripts`, criar também o atributo `typeorm` o qual defini a CLI:
 
 ```json
 "scripts": {
@@ -186,7 +200,7 @@ app.listen(process.env.PORT || 4000, () =>
 },
 ```
 
-- Dentro do arquivo ormconfig.js criar o CLI (ferramenta para criar migrations pelo terminal, e definir em que local será criado os arquivos .ts das migrations), e onde será rodado as migrations:
+- Dentro do arquivo `ormconfig.js` criar o CLI (ferramenta para criar migrations pelo terminal, e definir em que local será criado os arquivos .ts das migrations), e onde será rodado as migrations:
 
 ```js
 require("dotenv").config();
@@ -217,14 +231,14 @@ yarn typeorm -help
 
 ## Configuração para utilização de decorators no typescript, necessário pois o typeorm utiliza-se dos decorators
 
-- Dentro de tsconfig.json, descomentar as linhas:
+- Dentro de `tsconfig.json`, descomentar as linhas:
 
 ```json
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true,
 ```
 
-- Ainda dentro de tsconfig.json descomentar tb a linha com o atributo strictPropertyInitialization e defini-lo como false, para que não dê erro na inicialização dos atributos dos objetos:
+- Ainda dentro de `tsconfig.json` descomentar tb a linha com o atributo `strictPropertyInitialization` e defini-lo como false, para que não dê erro na inicialização dos atributos dos objetos:
 
 ```json
 "strictPropertyInitialization": false,
