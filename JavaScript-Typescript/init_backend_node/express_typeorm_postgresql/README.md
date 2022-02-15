@@ -254,19 +254,62 @@ yarn typeorm -help
 
 - Para que essas configurações funcionem talvez seja necessário reiniciar o vsCode
 
+---
+## Exemplo de criação de uma rota hellow world
+
+- Dentro de `src` criar um arquivo `routes.ts` com a rota inicial retornando a mensagem Hellow world. Abaixo segue o arquivo routes.ts:
+
+```ts
+import { Request, Response, Router } from 'express';
+
+const router = Router();
+
+router.get('/', (req: Request, res: Response) => {
+    res.status(200).json({ message: 'Hellow world' });
+});
+
+export { router };
+```
+
+- A partir desse momento todas as novas rotas da aplicação poderão ser inseridas nesse arquivo `routes.ts`
+
+- Para que os navegadores possam compartilhar recursos de diferentes origens é necessário a instalação de um mecanismo chamado `cors`, para isso instale o cors:
+
+```bash
+yarn add cors
+```
+
+- Instale os tipos do cors:
+
+```bash
+yarn add -D @types/cors
+```
+
+- Neste exemplo de api, as informações serão compartilhas via `JSON`, no caso será necessário configurar o exepress para que aceite formatos JSON. Para isso em `server.ts`
+é necessário importar o arquivo `routes.ts` e adicionar a configuração para que o express utilize-se do formato `JSON`. Segue a configuração do arquivo `server.ts`
+
+```ts
+import cors from "cors"
+import "dotenv/config";
+import "reflect-metadata";
+import express from "express";
+import "./database";
+import { router } from "./routes";
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(router);
+
+app.listen(process.env.PORT || 4000, () =>
+    console.log(`Server is running ${process.env.PORT || 4000}`)
+);
+```
+
+- Basta rodar o projeto com `yarn dev` e abrir no navegador `http://localhost:4000` que verá a mensagem `hellow world`
+
 - Sucesso! O Projeto inicial backend com NodeJS, expressJS, Typeorm e postgreSQL já está configurado e pronto para ser evoluído.
 
----
-
-## Adicionar a biblioteca uuid e os tipos do uuid, opcional. Para geração de IDs das tabelas dos bancos:
-
-```bash
-yarn add uuid
-```
-
-```bash
-yarn add @types/uuid -D
-```
 
 ## Comandos básicos para migrations
 
