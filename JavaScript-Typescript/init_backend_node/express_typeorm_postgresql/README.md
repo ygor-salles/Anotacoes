@@ -154,7 +154,7 @@ services:
 yarn add typeorm reflect-metadata pg
 ```
 
-- Na raiz do projeto criar um arquivo com o nome de ormconfig.js, onde ficará as configurações com o banco de dados:
+- Na raiz do projeto criar um arquivo com o nome de `ormconfig.js`, onde ficará as configurações com o banco de dados:
 
 ```js
 require("dotenv").config();
