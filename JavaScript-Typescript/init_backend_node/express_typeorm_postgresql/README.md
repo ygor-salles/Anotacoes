@@ -254,7 +254,6 @@ yarn typeorm -help
 
 - Para que essas configurações funcionem talvez seja necessário reiniciar o vsCode
 
----
 ## Exemplo de criação de uma rota hellow world
 
 - Dentro de `src` criar um arquivo `routes.ts` com a rota inicial retornando a mensagem Hellow world. Abaixo segue o arquivo routes.ts:
@@ -310,7 +309,7 @@ app.listen(process.env.PORT || 4000, () =>
 
 - Sucesso! O Projeto inicial backend com NodeJS, expressJS, Typeorm e postgreSQL já está configurado e pronto para ser evoluído.
 
-
+---
 ## Comandos básicos para migrations
 
 - Criando uma migration:
