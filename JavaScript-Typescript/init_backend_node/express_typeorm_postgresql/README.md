@@ -32,6 +32,12 @@ yarn add ts-node-dev -D
 
 ## Variáveis de ambiente
 
+- Para que o nodeJS consiga ler as variáveis de ambiente do arquivo `.env` é necessário instalar o lib dotenv:
+
+```bash
+yarn add dotenv
+```
+
 - Criar na raiz do projeto um arquivo com o nome `.env`, nele serão colocadas as variáveis de ambiente
   que conterão dados sensíveis a aplicação, como credenciais do banco, senhas de criptografia, entre outros.
 
