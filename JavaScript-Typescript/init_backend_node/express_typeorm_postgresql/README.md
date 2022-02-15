@@ -189,9 +189,11 @@ app.listen(process.env.PORT || 4000, () =>
 );
 ```
 
-- Dentro de `database` criar o diretório `migrations`
+## Configuração de migrations
 
-- Em `package.json` no objeto `scripts`, criar também o atributo `typeorm` o qual defini a CLI:
+- Caso queira utilizar migrations em seu projeto siga as seguintes etapas. Dentro de `database` criar o diretório `migrations`
+
+- Em `package.json` no objeto `scripts`, criar também o atributo `typeorm` o qual defini a CLI do typeorm para trabalhar com as migrations:
 
 ```json
 "scripts": {
