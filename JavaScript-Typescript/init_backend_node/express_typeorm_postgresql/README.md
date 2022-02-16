@@ -1,4 +1,4 @@
-# Projeto backend typescript, express, typeorm e postgresql 2021/2022
+# Projeto backend typescript, express, typeorm, postgresql e jest 2021/2022
 
 Inicializando e configurando uma aplicação backend com typescript, express, typeorm e postgresql
 
@@ -513,6 +513,80 @@ assets
 - Pronto basta recarregar o VSCode que as configurações do prettier+eslint serão aplicadas ao seu projeto. Abaixo segue como ficou as estrutura de pastas:
 
 <img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/estrutura1.1.PNG" heigth="80%" width="80%" />
+
+## Adicionando testes automatizados para o backend - jest
+
+- Instalar o jest e os tipos do jest em ambiente de desenvolvimento:
+
+```bash
+yarn add jest @types/jest -D
+```
+
+- Instalar a biblioteca ts-jest que é um preset para trabalhar com testes em typescript em ambiente de desenvolvimento:
+
+```bash
+yarn add ts-jest -D
+```
+
+- Criar o arquivo de configuração do jest:
+
+```bash
+yarn jest --init
+```
+
+- Após rodar o comando acima será solicitado que selecione as configurações desejadas, abaixo segue as configurações que uso:
+- `Would you like to use Jest when running "test" script in "package.json"?`: `Y`
+- `Would you like to use Typescript for the configuration file?`: `Y`
+- `Choose the test environment that will be used for testing`: `node`
+- `Do you want Jest to add coverage reports?`: `Y`
+- `Which provider should be used to instrument code for coverage?`: `v8`
+- `Automatically clear mock calls, instances and results before every test?`: `y`
+
+- Será gerado um arquivo `jest.config.ts` na raíz do projeto contendo todas as configurações do jest. Como padrão para esse arquivo utilizo as seguintes configs:
+
+```ts
+/*
+
+ * For a detailed explanation regarding each configuration property and type check, visit:
+
+ * https://jestjs.io/docs/configuration
+
+ */
+
+export default {
+    bail: false,
+
+    clearMocks: true,
+
+    collectCoverage: true,
+
+    coverageDirectory: 'coverage',
+
+    coverageProvider: 'v8',
+
+    preset: 'ts-jest',
+
+    testMatch: ['**/__tests__/**/*.spec.ts'],
+};
+```
+
+- Para utilizar testes de integração onde é possível testar diretamente pelo endpoint passando por todas as camadas até o banco de dados, será necessário a instalação da lib supertest em ambiente de desenvolvimento:
+
+```bash
+yarn add supertest @types/supertest -D
+```
+
+- Pronto. Basta criar dentro de `src` uma pasta `__tests__` e inserir todos os arquivos de testes dentro desse diretório. É necessário que o diretório tenha esse nome pois no arquivo `jest.config.ts` setamos o atributo `testMatch` para que reconheça somente os testes que estejam dentro desse diretório cuja extensão termina com `.spec.ts`.
+
+- Para rodar os testes basta executar o comando:
+
+```bash
+yarn test
+```
+
+- Abaixo segue a nova estrutura do projeto e a execução de um caso de teste como exemplo:
+
+<img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/estrutura1.2.PNG" heigth="80%" width="80%" />
 
 ---
 ## Comandos básicos para migrations
