@@ -53,9 +53,20 @@ BD_PASSWORD=123456
 BD_PORT=5432
 
 JWT_SECRET=
+```
 
-GITHUB_CLIENT_SECRET=
-GITHUB_CLIENT_ID=
+- Para uma boa prática crie também um arquivo na raíz do projeto com a nomeclatura `.env.example` para que quem baixe o repositório na máquina saiba quais as variáveis de ambiente estão sendo utilizadas no projeto, sem passar as credencias secretas é claro, apenas as chaves, exemplo:
+
+```.env.example
+PORT=
+
+DATABASE_URL=
+BD_USERNAME=
+BD_DATABASE=
+BD_PASSWORD=
+BD_PORT=
+
+JWT_SECRET=
 ```
 
 ## Instalando o framework de servidor web ExpressJS
@@ -321,7 +332,7 @@ app.listen(process.env.PORT || 4000, () =>
 
 <img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/extens%C3%B5es.PNG" heigth="30%" width="30%" />
 
-- Verificar se possua alguma formatação padrão em seu VSCode para códigos em typescript, o mesmo pode ser acessado pelo windows com `CTRL+SHIFT+P`, `Preferências: Abrir configurações (JSON)`. Abaixo segue um exemplo do arquivo de config do VSCode:
+- Verificar se possui alguma formatação padrão em seu VSCode para códigos em typescript, o mesmo pode ser acessado pelo windows com `CTRL+SHIFT+P`, `Preferências: Abrir configurações (JSON)`. Abaixo segue um exemplo do arquivo de config do VSCode:
 
 ```json
 {
@@ -367,7 +378,141 @@ app.listen(process.env.PORT || 4000, () =>
 }
 ```
 
-- Note que nas configurações acima há um atributo `[typescript]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-a do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto. 
+- Note que nas configurações acima há um atributo `[typescript]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-a do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto.
+
+- Verificar também se nesse arquivo JSON de configuração, o atributo `"editor.formatOnSave"` está setado para true. O mesmo deve estar setado para true para que quando for salvar o seu código typescript, automaticamente formate o código para o padrão eslint prettier configurado. Após isso, salvar as alterações e fechar o arquivo `settings.json` do seu VSCode
+
+- Clicar com o direito do mouse na raiz do projeto e selecionar a opção `Generate .editorconfig`. Será gerado um arquivo com o nome `.editorconfig` na raiz do projeto, nele é setado as configurações de formatação como espaçamento das identações de código. Aconselhado deixar as configurações do `.editorconfig` da seguinte forma:
+
+```.editorconfig
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = false
+```
+
+- Instalar o eslint no projeto em ambiente de desenvolvimento:
+
+```bash
+yarn add -D eslint
+```
+- Inicializando a configuração do eslint:
+
+```bash
+yarn eslint --init
+```
+
+- Logo após rodar esse comando será feito algumas perguntas para inicializar a configuração eslint, a configuração é opcional, abaixo segue a configuração que utilizo:
+- `How would you like to use ESLint?`: `To check sintax, find problems, and enforce code styles`
+- `What type of modules does your project use?`: `JavaScript modules (import/export)`
+- `Wich framework does your project use?`: `None of these`
+- `Does your project use TypeScript`: `Yes`
+- `Where does your code run? ...`: `* Node`
+- `How would you like to define a style for you project? ...`: `Use a popular style guide`
+- `Wich style guide do you want to follow? ...`: `Airbnb: https://github.com/airbnb/javascript`
+- `What format do you want your config file to be in? ...`: `JSON`
+- `Would you like to install them now with npm?`: `Yes`
+
+- Como na última escolha `Would you like to install them now with npm?` clicamos em sim e estamos utilizando o projeto com o gerenaciador `yarn`, será necessário remover os arquivos `package-lock.json` e `yarn.lock` do projeto
+
+- Após remover esses dois arquivos, executar o comando:
+
+```bash
+yarn
+```
+- Instalar o prettier e suas configurações em dependencias de desenvolvimento:
+
+```bash
+yarn add prettier eslint-config-prettier eslint-plugin-prettier babel-eslint -D
+```
+
+- Instalar o eslint-resolver em dependencias de desenvolvimento:
+
+```bash
+yarn add eslint-import-resolver-typescript -D
+```
+
+- Após a instalação dessas dependências será gerado um arquivo na raiz do projeto chamado de `.eslintrc.json`, nele serão setadas todas as configurações de formatação do código e o que deve ou não ser usado como padrão como boas práticas de código. A personalização fica a critério, abaixo segue a personalização de código que utilizo no arquivo `.eslintrc.json`
+
+```json
+{
+    "env": {
+      "es2021": true,
+      "node": true,
+      "jest": true
+    },
+    "extends": [
+      "airbnb-base",
+      "plugin:prettier/recommended"
+    ],
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "rules": {
+      "camelcase": "off",
+      "import/prefer-default-export": "off",
+      "class-methods-use-this": "off",
+      "no-param-reassign": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          "singleQuote": true,
+          "trailingComma": "all",
+          "arrowParens": "avoid",
+          "printWidth": 100
+        }
+      ],
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "ts": "never"
+        }
+      ]
+    },
+    "settings": {
+      "import/resolver": {
+        "typescript": {}
+      }
+    }
+  }
+```
+
+- Você pode escolher quais tipos de arquivos e diretórios que o eslint+prettier podem ignorar para realizar a formatação, pois a intenção é que o eslint+prettier só formatem os códigos de desenvolvimento. Para isso crie dois arquivos na raíz do projeto `.eslintignore` e `.prettierignore` passando as seguintes configurações:
+
+```.eslintignore
+# Ignore artifacts:
+build
+coverage
+**/*.js
+node_modules
+assets
+
+# Ignore all HTML files:
+*.html
+```
+
+- Pronto basta recarregar o VSCode que as configurações do prettier+eslint serão aplicadas ao seu projeto. Abaixo segue como ficou as estrutura de pastas:
+
+<img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/estrutura1.1.PNG" heigth="80%" width="80%" />
 
 ---
 ## Comandos básicos para migrations
