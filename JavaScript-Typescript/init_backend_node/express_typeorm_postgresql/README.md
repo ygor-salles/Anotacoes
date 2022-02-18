@@ -684,7 +684,7 @@ export default async (): Promise<Connection> => createConnection();
 
 - Dentro de `src` criar um arquivo `app.ts` no qual passaremos toda a configuração de `server.ts` para ele, exceto o start do servidor:
 
-```
+```ts
 import cors from 'cors';
 import 'dotenv/config';
 import 'reflect-metadata';
@@ -719,6 +719,35 @@ app.use((err: ApiError | any, request: Request, response: Response, next: NextFu
 export { app };
 ```
 
+- Note que foi adicionada uma biblioteca `express-async-errors` que captura e trata todos os erros ocasionados na requisição, fazendo isso não será necessário a utilização de try catchs nas controllers. Para instalar essa lib:
+
+```bash
+yarn add express-async-errors
+```
+
+- `server.ts`: Em server importar a configuração de app e a criação de conexão com o typeorm:
+
+```ts
+import { app } from './app';
+import createConnection from './database/index';
+
+createConnection()
+  .then(async () => {
+    console.log('Database connection successfully initialized');
+
+    app.listen(process.env.PORT || 4000, () =>
+      console.log(`Server is running ${process.env.PORT || 4000}`),
+    );
+  })
+  .catch(error => {
+    console.log('TypeORM connection error: ', error.message);
+
+    app.listen(process.env.PORT || 4000, () =>
+      console.log(`Server is running ${process.env.PORT || 4000}`),
+    );
+  });
+```
+
 - Instalar os tipos do driver de conexão `pg` em ambiente de desenvolvimento:
 ```bash
 yarn add @types/pg -D
@@ -737,7 +766,7 @@ yarn add @types/pg -D
     "clean": "ts-node-dev src/scripts/afterAllTests.ts"
  },
 ```
-- A ideia é que antes dos testes deve setar a variavel de ambiente NODE_ENV para test e executar o script de seeder o qual criará a conexão com o banco de dados de teste, verificará se existe dados nesse banco se tiver limpa o banco, então executará as migrations e logo após os seeders que mockarão alguns dados para serem utilizados nos testes. E após a execução dos testes será executado o script posttest o qual irá limpar o banco de dados de teste para que numa próxima execução de teste o banco ja esteja vazio. Para isso dentro de `src` crie uma pasta com nome `scripts` e dentro dela o arquivo `Seeders.ts` com a seguinte configuração:
+- A ideia é que antes da execução de todos os testes deve setar a variavel de ambiente NODE_ENV para test e executar o script de seeder. O script seeder irá criar a conexão com o banco de dados de teste, verificará se existe dados nesse banco e se existir irá limpá-lo. Então executará as migrations e logo após os seeders, que mockarão alguns dados para serem utilizados nos testes. E após a execução de todos os testes será executado o script posttest o qual irá limpar o banco de dados de teste para que numa próxima execução de teste o banco ja esteja vazio. Para isso dentro de `src` crie uma pasta com nome `scripts` e dentro dela o arquivo `Seeders.ts` com a seguinte configuração:
 
 ```ts
 import { DataSeed } from '../database/seeders/DataSeed';
@@ -774,6 +803,68 @@ class SeederRun {
 SeederRun.run();
 ```
 
+- Note que no código utilizado a classe `DataSeed`, o mesmo deve ser criado em `src/database/seeders/DataSeed.ts`. Será nesse arquivo que serão mockados os dados para o banco de teste. Abaixo segue um exemplo do arquivo `DataSeed.ts` contendo uma entidade users:
+
+```ts
+import { getCustomRepository } from 'typeorm';
+import { EnumRoleUser } from '../../entities/User';
+import { UserRepository } from '../../repositories/UserRepository';
+
+class DataSeed {
+  public static async verifyEntities(): Promise<boolean> {
+    const repositoryUser = getCustomRepository(UserRepository);
+    try {
+      const allUsers = await repositoryUser.find();
+      return !!allUsers.length;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  public static async createUsers(): Promise<void> {
+    const repository = getCustomRepository(UserRepository);
+    const arrayUsers = [];
+
+    arrayUsers.push(
+      repository.create({
+        name: 'User 1',
+        email: 'user1@gmail.com',
+        password: '123456',
+        role: EnumRoleUser.SUPER,
+      }),
+    );
+    arrayUsers.push(
+      repository.create({
+        name: 'User 2',
+        email: 'user2@gmail.com',
+        password: '123456',
+        role: EnumRoleUser.NORMAL,
+      }),
+    );
+    arrayUsers.push(
+      repository.create({
+        name: 'User 3',
+        email: 'user3@gmail.com',
+        password: '123456',
+        role: EnumRoleUser.NORMAL,
+      }),
+    );
+    arrayUsers.push(
+      repository.create({
+        name: 'User 4',
+        email: 'user4@gmail.com',
+        password: '123456',
+        role: EnumRoleUser.EMPLOYEE,
+      }),
+    );
+
+    await repository.save(arrayUsers);
+  }
+}
+
+export { DataSeed };
+```
+
 - Dentro de `scripts` criar também o arquivo `afterAllTests` com a seguinte configuração:
 
 ```ts
@@ -794,6 +885,33 @@ async function dropDatabase() {
 dropDatabase()
   .then((db: string) => console.log(`Test database ${db} deleted successfully`))
   .catch(err => console.log('Error: ', err));
+```
+
+- Para cada arquivo de teste de integração será necessário que antes de executar todos os teste daquele arquivo primeiramente seja criado a conexão com o banco de dados, e após a execução de todos os testes essa conexão seja encerrada. Segue um exemplo da configuração de um arquivo de teste de integração:
+
+```ts
+import request from 'supertest';
+import { getConnection, getCustomRepository } from 'typeorm';
+import { app } from '../../app';
+import createConnection from '../../database';
+
+...
+
+describe('Users', () => {
+  beforeAll(async () => {
+    await createConnection();
+    const Login = await request(app).post('/signin').send(loginUser);
+    token = Login.body.token;
+  });
+
+  afterAll(async () => {
+    const connection = getConnection();
+    await connection.close();
+  });
+  
+  ...
+  
+});
 ```
 
 ---
