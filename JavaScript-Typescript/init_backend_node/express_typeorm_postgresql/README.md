@@ -1010,6 +1010,9 @@ module.exports = config;
 ```ProcFile
 web: npm start
 ```
+---
+
+- Um exemplo completo desse projeto se encontra em: https://github.com/ygor-salles/api-auth-node
 
 ---
 ## Comandos básicos para migrations
