@@ -174,7 +174,7 @@ require("dotenv").config();
 
 module.exports = {
   type: "postgres",
-  host: process.env.BD_HOST,
+  host: "localhost",
   port: process.env.BD_PORT || 5432,
   username: process.env.BD_USERNAME,
   password: process.env.BD_PASSWORD,
@@ -228,7 +228,7 @@ require("dotenv").config();
 
 module.exports = {
   type: "postgres",
-  host: process.env.BD_HOST,
+  host: "localhost",
   port: process.env.BD_PORT || 5432,
   username: process.env.BD_USERNAME,
   password: process.env.BD_PASSWORD,
