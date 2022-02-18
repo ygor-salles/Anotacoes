@@ -1,4 +1,4 @@
-# Projeto backend typescript, express, typeorm, postgresql e jest 2021/2022
+# Projeto backend typescript, express, typeorm, postgresql, jest e deploy heroku 2021/2022
 
 Inicializando e configurando uma aplicação backend com typescript, express, typeorm e postgresql
 
@@ -912,6 +912,103 @@ describe('Users', () => {
   ...
   
 });
+```
+
+## Configuração para o build da aplicação e deploy no Heroku
+
+- Necessário a criação de um app na plataforma heroku e um banco postgresql.
+- Em `package.json` criar o script de `build` e `start`. Build para gerar o código javascript que será executado no servidor heroku, e o script start que apontará a execução do servidor para o código javascript:
+
+```json
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/src/server",
+    "dev": "ts-node-dev --files --transpile-only --ignore-watch node_modules src/server.ts",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "pretest": "set NODE_ENV=test&&ts-node-dev src/scripts/Seeders.ts",
+    "test": "jest",
+    "posttest": "ts-node-dev src/scripts/afterAllTests.ts",
+    "seed": "ts-node-dev src/scripts/Seeders.ts",
+    "clean": "ts-node-dev src/scripts/afterAllTests.ts"
+  },
+```
+
+- Em `tsconfig.json` informar a o diretório onde ficará o build da aplicação (pasta onde será transpilado o código de typescript para javascript). E informar o rootDir ou seja a partir de qual reposítório deve ser feito a transpilação de código. Basta apenas adicionar esses dois atributos em `tsconfig.json`
+
+```json
+"outDir": "build",
+"rootDir": "./",
+```
+
+- Em `ormconfig.js` definir as variáveis de ambiente do banco de dados de produção criado no heroku.
+
+```js
+require("dotenv").config();
+
+let config = {}
+if (process.env.NODE_ENV === 'development') {
+  config = {
+    type: "postgres",
+    host: "localhost",
+    port: +process.env.BD_PORT || 5432,
+    username: process.env.BD_USERNAME,
+    password: process.env.BD_PASSWORD,
+    database: process.env.BD_DATABASE,
+    synchronize: false,
+    migrations: ["src/database/migrations/*.ts"],
+    entities: ["src/entities/*.ts"],
+    cli: {
+      migrationsDir: "./src/database/migrations",
+    }
+  }
+} else if (process.env.NODE_ENV === 'test') {
+  config = {
+    type: "postgres",
+    host: "localhost",
+    port: +process.env.BD_PORT_TEST || 5432,
+    username: process.env.BD_USERNAME_TEST,
+    password: process.env.BD_PASSWORD_TEST,
+    database: process.env.BD_DATABASE_TEST,
+    synchronize: false,
+    migrations: ["src/database/migrations/*.ts"],
+    entities: ["src/entities/*.ts"],
+    cli: {
+      migrationsDir: "./src/database/migrations",
+    },
+  }
+} else if (process.env.NODE_ENV === 'production') {
+  config = {
+    type: 'postgres',
+    host: process.env.BD_HOST_PROD,
+    port: +process.env.BD_PORT_PROD || 5432,
+    username: process.env.BD_USERNAME_PROD,
+    password: process.env.BD_PASSWORD_PROD,
+    database: process.env.BD_DATABASE_PROD,
+    synchronize: false,
+    extra: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+    migrations: ['build/src/database/migrations/*.js'],
+    entities: ['build/src/entities/*.js'],
+    cli: {
+      migrationsDir: 'build/src/database/migrations',
+    },
+  };
+} else {
+  console.log('NODE_ENV incorrect...');
+}
+
+module.exports = config;
+```
+
+- Não se esquecer de atualizar as variáveis de ambiente novas em `.env` e `.env.example`. As variáveis do banco de produção e as variáveis `PORT`, `NODE_ENV` e `JWT_SECRET` devem ser utilizadas no heroku também. Para rodar as tabelas do banco de dados no heroku, basta alterar a variável `NODE_ENV` para `production` e rodar a migration. Com as configurações que foram realizadas neste projeto será através da variável de ambiente `NODE_ENV`  que defineremos para qual ambiente ou banco de dados a aplicação deve apontar.
+
+- Por fim basta criar um arquivo com nome `ProcFile` dentro da raiz do projeto para que o heroku saiba qual comando deve ser iniciado, com o seguinte conteúdo nesse arquivo:
+```ProcFile
+web: npm start
 ```
 
 ---
