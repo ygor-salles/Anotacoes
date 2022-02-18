@@ -803,7 +803,7 @@ class SeederRun {
 SeederRun.run();
 ```
 
-- Note que no código utilizado a classe `DataSeed`, o mesmo deve ser criado em `src/database/seeders/DataSeed.ts`. Será nesse arquivo que serão mockados os dados para o banco de teste. Abaixo segue um exemplo do arquivo `DataSeed.ts` contendo uma entidade users:
+- Note que no código acima é utilizado a classe `DataSeed`, o mesmo deve ser criado em `src/database/seeders/DataSeed.ts`. Será nesse arquivo que serão mockados os dados para o banco de teste. Abaixo segue um exemplo do arquivo `DataSeed.ts` contendo uma entidade users:
 
 ```ts
 import { getCustomRepository } from 'typeorm';
