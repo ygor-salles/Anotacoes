@@ -175,7 +175,7 @@ require("dotenv").config();
 module.exports = {
   type: "postgres",
   host: "localhost",
-  port: process.env.BD_PORT || 5432,
+  port: +process.env.BD_PORT || 5432,
   username: process.env.BD_USERNAME,
   password: process.env.BD_PASSWORD,
   database: process.env.BD_DATABASE,
@@ -589,6 +589,212 @@ yarn test
 - Abaixo segue a nova estrutura do projeto e a execução de um caso de teste como exemplo:
 
 <img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/estrutura1.2.PNG" heigth="80%" width="80%" />
+
+## Configurando aplicação para executar além dos testes unitários os testes de integração
+
+- Para execução dos testes de integração utilizo um banco de dados apartado do banco de desenvolvimento, um banco de dados só para os testes. Além disso é necessário fazer alguns ajustes para manipulação da conexão com o banco de dados na execução dos testes e na execução da aplicação. Também mocko alguns dados no database de testes para serem utilizados durante a execução dos testes. Abaixo segue as alterações de alguns arquivos para a execução dos testes de integração:
+
+- `.env`: é necessário adicionar as variáveis de ambiente do banco de dados de teste:
+```.env
+PORT=4000
+NODE_ENV=development
+
+DATABASE_URL=postgresql://postgres:123456@localhost:5432/database_name
+BD_USERNAME=postgres
+BD_DATABASE=database_name
+BD_PASSWORD=123456
+BD_PORT=5432
+
+BD_URL_TEST=postgresql://postgres:123456@localhost:5432/database_name_test
+BD_USERNAME_TEST=postgres
+BD_DATABASE_TEST=database_name_test
+BD_PASSWORD_TEST=123456
+BD_PORT_TEST=5432
+
+JWT_SECRET=sdfhskjdhf35987345jdk
+```
+
+- `.env.example`: atualizar também o .env.example:
+
+```.env.example
+PORT=
+NODE_ENV=
+
+DATABASE_URL=
+BD_USERNAME=
+BD_DATABASE=
+BD_PASSWORD=
+BD_PORT=
+
+BD_USERNAME_TEST=
+BD_DATABASE_TEST=
+BD_PASSWORD_TEST=
+BD_PORT_TEST=
+
+JWT_SECRET=
+```
+
+- `ormconfig.js`: é necessário colocar a conexão do banco de dados de teste em ormconfig. A aplicação saberá para qual banco de dados deve apontar a partir da variável de ambiente NODE_ENV:
+```js
+require("dotenv").config();
+
+let config = {}
+if (process.env.NODE_ENV === 'development') {
+  config = {
+    type: "postgres",
+    host: "localhost",
+    port: +process.env.BD_PORT || 5432,
+    username: process.env.BD_USERNAME,
+    password: process.env.BD_PASSWORD,
+    database: process.env.BD_DATABASE,
+    synchronize: false,
+    migrations: ["src/database/migrations/*.ts"],
+    entities: ["src/entities/*.ts"],
+    cli: {
+      migrationsDir: "./src/database/migrations",
+    }
+  }
+} else if (process.env.NODE_ENV === 'test') {
+  config = {
+    type: "postgres",
+    host: "localhost",
+    port: +process.env.BD_PORT_TEST || 5432,
+    username: process.env.BD_USERNAME_TEST,
+    password: process.env.BD_PASSWORD_TEST,
+    database: process.env.BD_DATABASE_TEST,
+    synchronize: false,
+    migrations: ["src/database/migrations/*.ts"],
+    entities: ["src/entities/*.ts"],
+    cli: {
+      migrationsDir: "./src/database/migrations",
+    },
+  }
+}
+
+module.exports = config;
+```
+
+- `src/database/index`: Ao invés de criar a conexão typeorm diretamente em index, iremos exportá-la para ser utilizada nos arquivos de testes e no arquivo de start do servidor:
+
+```ts
+import { createConnection, Connection } from 'typeorm';
+
+export default async (): Promise<Connection> => createConnection();
+```
+
+- Dentro de `src` criar um arquivo `app.ts` no qual passaremos toda a configuração de `server.ts` para ele, exceto o start do servidor:
+
+```
+import cors from 'cors';
+import 'dotenv/config';
+import 'reflect-metadata';
+import express, { Request, Response, NextFunction } from 'express';
+import 'express-async-errors';
+import './database';
+import { router } from './routes';
+import { ApiError } from './validators/Exceptions/ApiError';
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(router);
+
+// eslint-disable-next-line no-unused-vars
+app.use((err: ApiError | any, request: Request, response: Response, next: NextFunction) => {
+  if (err instanceof ApiError) {
+    if (err.message) {
+      return response.status(err.code).json({
+        message: err.message,
+      });
+    }
+
+    return response.status(err.code).end();
+  }
+
+  return response.status(500).json({
+    message: err.message || 'Internal Server Error',
+  });
+});
+
+export { app };
+```
+
+- Instalar os tipos do driver de conexão `pg` em ambiente de desenvolvimento:
+```bash
+yarn add @types/pg -D
+```
+
+- `package.json`: no objeto scripts em package.json adicionar o atributo pretest que será o script utilizado antes da realização dos testes e o posttest que será o script utilizado após os testes.
+
+```json
+"scripts": {
+    "dev": "ts-node-dev --files --transpile-only --ignore-watch node_modules src/server.ts",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "pretest": "set NODE_ENV=test&&ts-node-dev src/scripts/Seeders.ts",
+    "test": "jest",
+    "posttest": "ts-node-dev src/scripts/afterAllTests.ts",
+    "seed": "ts-node-dev src/scripts/Seeders.ts",
+    "clean": "ts-node-dev src/scripts/afterAllTests.ts"
+ },
+```
+- A ideia é que antes dos testes deve setar a variavel de ambiente NODE_ENV para test e executar o script de seeder o qual criará a conexão com o banco de dados de teste, verificará se existe dados nesse banco se tiver limpa o banco, então executará as migrations e logo após os seeders que mockarão alguns dados para serem utilizados nos testes. E após a execução dos testes será executado o script posttest o qual irá limpar o banco de dados de teste para que numa próxima execução de teste o banco ja esteja vazio. Para isso dentro de `src` crie uma pasta com nome `scripts` e dentro dela o arquivo `Seeders.ts` com a seguinte configuração:
+
+```ts
+import { DataSeed } from '../database/seeders/DataSeed';
+import createConnection from '../database/index';
+import 'dotenv/config';
+
+class SeederRun {
+  public static async run() {
+    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+      try {
+        const connection = await createConnection();
+        console.log('\n== [Database connection] ==');
+
+        const entitiesExists = await DataSeed.verifyEntities();
+        if (entitiesExists) {
+          console.log('\n== Database is already populated ==\n');
+          await connection.query(`DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC`);
+          console.log('== Database initialized ==\n');
+        }
+        await connection.runMigrations();
+        console.log('\n== [Migrations run sucessfully] ==');
+
+        await DataSeed.createUsers();
+        console.log('\n== [Seeders run successfully] ==\n');
+      } catch (error) {
+        console.log('\nError:', error);
+      }
+    } else {
+      console.log('Seeders should only be run in local environments');
+    }
+  }
+}
+
+SeederRun.run();
+```
+
+- Dentro de `scripts` criar também o arquivo `afterAllTests` com a seguinte configuração:
+
+```ts
+import { Client } from 'pg';
+import 'dotenv/config';
+
+async function dropDatabase() {
+  const client = new Client({
+    connectionString: process.env.BD_URL_TEST,
+  });
+
+  await client.connect();
+  await client.query('DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC');
+  await client.end();
+  return process.env.BD_TEST_DATABASE || '';
+}
+
+dropDatabase()
+  .then((db: string) => console.log(`Test database ${db} deleted successfully`))
+  .catch(err => console.log('Error: ', err));
+```
 
 ---
 ## Comandos básicos para migrations
