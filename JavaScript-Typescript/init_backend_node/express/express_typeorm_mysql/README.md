@@ -47,11 +47,11 @@ yarn add dotenv
 PORT=4000
 NODE_ENV=development
 
-DATABASE_URL=mysql://mysql:123456@localhost:5432/database_name
+DATABASE_URL=mysql://mysql:123456@localhost:3306/database_name
 BD_USERNAME=mysql
 BD_DATABASE=database_name
 BD_PASSWORD=123456
-BD_PORT=5432
+BD_PORT=3306
 
 JWT_SECRET=
 ```
@@ -138,16 +138,15 @@ coverage
   docker e executá-la. Para isso crie na raiz do projeto um arquivo `docker-compose.yml` com as seguintes configurações
 
 ```yml
-version: "3.5"
+version: "3"
 
 services:
   mysql:
-    container_name: app-example
-    image: mysql:12.5
+    container_name: app-smarkio
+    image: mysql:5.7
     environment:
-      mysql_USER: ${BD_USERNAME}
-      mysql_DB: ${BD_DATABASE}
-      mysql_PASSWORD: ${BD_PASSWORD}
+      MYSQL_DATABASE: ${BD_NAME}
+      MYSQL_ROOT_PASSWORD: ${BD_PASSWORD}
     expose:
       - "${BD_PORT}"
     ports:
@@ -175,7 +174,7 @@ require("dotenv").config();
 module.exports = {
   type: "mysql",
   host: "localhost",
-  port: +process.env.BD_PORT || 5432,
+  port: +process.env.BD_PORT || 3306,
   username: process.env.BD_USERNAME,
   password: process.env.BD_PASSWORD,
   database: process.env.BD_DATABASE,
@@ -231,7 +230,7 @@ require("dotenv").config();
 module.exports = {
   type: "mysql",
   host: "localhost",
-  port: process.env.BD_PORT || 5432,
+  port: process.env.BD_PORT || 3306,
   username: process.env.BD_USERNAME,
   password: process.env.BD_PASSWORD,
   database: process.env.BD_DATABASE,
@@ -598,17 +597,17 @@ yarn test
 PORT=4000
 NODE_ENV=development
 
-DATABASE_URL=mysql://mysql:123456@localhost:5432/database_name
+DATABASE_URL=mysql://mysql:123456@localhost:3306/database_name
 BD_USERNAME=mysql
 BD_DATABASE=database_name
 BD_PASSWORD=123456
-BD_PORT=5432
+BD_PORT=3306
 
-BD_URL_TEST=mysql://mysql:123456@localhost:5432/database_name_test
+BD_URL_TEST=mysql://mysql:123456@localhost:3306/database_name_test
 BD_USERNAME_TEST=mysql
 BD_DATABASE_TEST=database_name_test
 BD_PASSWORD_TEST=123456
-BD_PORT_TEST=5432
+BD_PORT_TEST=3306
 
 JWT_SECRET=sdfhskjdhf35987345jdk
 ```
@@ -643,7 +642,7 @@ if (process.env.NODE_ENV === "development") {
   config = {
     type: "mysql",
     host: "localhost",
-    port: +process.env.BD_PORT || 5432,
+    port: +process.env.BD_PORT || 3306,
     username: process.env.BD_USERNAME,
     password: process.env.BD_PASSWORD,
     database: process.env.BD_DATABASE,
@@ -658,7 +657,7 @@ if (process.env.NODE_ENV === "development") {
   config = {
     type: "mysql",
     host: "localhost",
-    port: +process.env.BD_PORT_TEST || 5432,
+    port: +process.env.BD_PORT_TEST || 3306,
     username: process.env.BD_USERNAME_TEST,
     password: process.env.BD_PASSWORD_TEST,
     database: process.env.BD_DATABASE_TEST,
@@ -964,7 +963,7 @@ if (process.env.NODE_ENV === "development") {
   config = {
     type: "mysql",
     host: "localhost",
-    port: +process.env.BD_PORT || 5432,
+    port: +process.env.BD_PORT || 3306,
     username: process.env.BD_USERNAME,
     password: process.env.BD_PASSWORD,
     database: process.env.BD_DATABASE,
@@ -979,7 +978,7 @@ if (process.env.NODE_ENV === "development") {
   config = {
     type: "mysql",
     host: "localhost",
-    port: +process.env.BD_PORT_TEST || 5432,
+    port: +process.env.BD_PORT_TEST || 3306,
     username: process.env.BD_USERNAME_TEST,
     password: process.env.BD_PASSWORD_TEST,
     database: process.env.BD_DATABASE_TEST,
@@ -994,7 +993,7 @@ if (process.env.NODE_ENV === "development") {
   config = {
     type: "mysql",
     host: process.env.BD_HOST_PROD,
-    port: +process.env.BD_PORT_PROD || 5432,
+    port: +process.env.BD_PORT_PROD || 3306,
     username: process.env.BD_USERNAME_PROD,
     password: process.env.BD_PASSWORD_PROD,
     database: process.env.BD_DATABASE_PROD,
@@ -1025,11 +1024,6 @@ module.exports = config;
 ```ProcFile
 web: npm start
 ```
-
----
-
-- Um exemplo completo desse projeto se encontra em: https://github.com/ygor-salles/api-auth-node
-
 ---
 
 ## Comandos básicos para migrations
