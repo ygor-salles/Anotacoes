@@ -47,7 +47,6 @@ yarn add dotenv
 PORT=4000
 NODE_ENV=development
 
-DATABASE_URL=mysql://mysql:123456@localhost:3306/database_name
 BD_USERNAME=mysql
 BD_DATABASE=database_name
 BD_PASSWORD=123456
@@ -62,7 +61,6 @@ JWT_SECRET=
 PORT=
 NODE_ENV=
 
-DATABASE_URL=
 BD_USERNAME=
 BD_DATABASE=
 BD_PASSWORD=
@@ -142,7 +140,7 @@ version: "3"
 
 services:
   mysql:
-    container_name: app-smarkio
+    container_name: app-teste
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: ${BD_NAME}
@@ -153,7 +151,7 @@ services:
       - "${BD_PORT}:${BD_PORT}"
 ```
 
-- Note que as variáveis `BD_USERNAME`, `BD_DATABASE`, `BD_PASSWORD` e `BD_PORT` são variáveis que devem
+- Note que as variáveis `BD_NAME`, `BD_PASSWORD` e `BD_PORT` são variáveis que devem
   estar setadas no arquivo `.env` com seus respectivos valores
 
 - Verificar se nenhum processo ou outro banco esteja executando na mesma porta definida na variável de ambiente `BD_PORT`, caso não tenha basta agora executar o comando `docker-compose up` que uma nova imagem do docker com o banco mysql estará executando para ser utilizada posteriormente na sua aplicação. Você poderá visualizar o schema do banco mysql com algum database-studio como `dbeaver` ou `beekeeper` setando as mesmas credenciais definidas em `.env`
@@ -163,7 +161,7 @@ services:
 - Instalar o ORM, reflect-metadata e o driver de conexão com o mysql
 
 ```bash
-yarn add typeorm reflect-metadata pg
+yarn add typeorm reflect-metadata mysql
 ```
 
 - Na raiz do projeto criar um arquivo com o nome de `ormconfig.js`, onde ficará as configurações com o banco de dados:
