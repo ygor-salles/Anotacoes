@@ -595,13 +595,11 @@ yarn test
 PORT=4000
 NODE_ENV=development
 
-DATABASE_URL=mysql://mysql:123456@localhost:3306/database_name
 BD_USERNAME=mysql
 BD_DATABASE=database_name
 BD_PASSWORD=123456
 BD_PORT=3306
 
-BD_URL_TEST=mysql://mysql:123456@localhost:3306/database_name_test
 BD_USERNAME_TEST=mysql
 BD_DATABASE_TEST=database_name_test
 BD_PASSWORD_TEST=123456
@@ -616,7 +614,6 @@ JWT_SECRET=sdfhskjdhf35987345jdk
 PORT=
 NODE_ENV=
 
-DATABASE_URL=
 BD_USERNAME=
 BD_DATABASE=
 BD_PASSWORD=
