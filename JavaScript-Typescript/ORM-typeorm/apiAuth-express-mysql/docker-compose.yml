@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  mysql:
+    container_name: app-teste
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ${BD_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${BD_PASSWORD}
+    expose:
+      - "${BD_PORT}"
+    ports:
+      - "${BD_PORT}:${BD_PORT}"
