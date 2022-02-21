@@ -752,12 +752,6 @@ createConnection()
   });
 ```
 
-- Instalar os tipos do driver de conexão `pg` em ambiente de desenvolvimento:
-
-```bash
-yarn add @types/pg -D
-```
-
 - `package.json`: no objeto scripts em package.json adicionar o atributo pretest que será o script utilizado antes da realização dos testes e o posttest que será o script utilizado após os testes.
 
 ```json
@@ -775,39 +769,58 @@ yarn add @types/pg -D
 - A ideia é que antes da execução de todos os testes deve setar a variavel de ambiente NODE_ENV para test e executar o script de seeder. O script seeder irá criar a conexão com o banco de dados de teste, verificará se existe dados nesse banco e se existir irá limpá-lo. Então executará as migrations e logo após os seeders, que mockarão alguns dados para serem utilizados nos testes. E após a execução de todos os testes será executado o script posttest o qual irá limpar o banco de dados de teste para que numa próxima execução de teste o banco ja esteja vazio. Para isso dentro de `src` crie uma pasta com nome `scripts` e dentro dela o arquivo `Seeders.ts` com a seguinte configuração:
 
 ```ts
-import { DataSeed } from "../database/seeders/DataSeed";
-import createConnection from "../database/index";
-import "dotenv/config";
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+import { Connection } from 'typeorm';
+import { DataSeed } from '../database/seeders/DataSeed';
+import createConnection from '../database/index';
+import 'dotenv/config';
 
 class SeederRun {
   public static async run() {
-    if (
-      process.env.NODE_ENV === "test" ||
-      process.env.NODE_ENV === "development"
-    ) {
+    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
       try {
         const connection = await createConnection();
-        console.log("\n== [Database connection] ==");
+        console.log('\n== [Database connection] ==');
 
         const entitiesExists = await DataSeed.verifyEntities();
         if (entitiesExists) {
-          console.log("\n== Database is already populated ==\n");
-          await connection.query(
-            `DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC`
-          );
-          console.log("== Database initialized ==\n");
+          console.log('\n== Database is already populated ==\n');
+
+          await this.queryDropTables(connection);
+          console.log('== Database initialized ==\n');
         }
+
         await connection.runMigrations();
-        console.log("\n== [Migrations run sucessfully] ==");
+        console.log('\n== [Migrations run sucessfully] ==');
 
         await DataSeed.createUsers();
-        console.log("\n== [Seeders run successfully] ==\n");
+        console.log('\n== [Seeders run successfully] ==');
+
+        await connection.close();
+        console.log('\n== [Connection database close] ==\n');
       } catch (error) {
-        console.log("\nError:", error);
+        console.log('\nError:', error);
       }
     } else {
-      console.log("Seeders should only be run in local environments");
+      console.log('Seeders should only be run in local environments');
     }
+  }
+
+  private static async queryDropTables(connection: Connection): Promise<void> {
+    await connection.query('SET FOREIGN_KEY_CHECKS = 0;');
+
+    const listTables: { table_name: string }[] = await connection.query(
+      `SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.BD_DATABASE_TEST}'`,
+    );
+    const listTableNames = listTables.map(table => table.table_name);
+
+    for (const table of listTableNames) {
+      await connection.query(`DROP TABLE ${process.env.BD_DATABASE_TEST}.${table}`);
+      console.log(` * drop table: ${table}`);
+    }
+
+    await connection.query('SET FOREIGN_KEY_CHECKS = 1;');
   }
 }
 
@@ -879,23 +892,44 @@ export { DataSeed };
 - Dentro de `scripts` criar também o arquivo `afterAllTests` com a seguinte configuração:
 
 ```ts
-import { Client } from "pg";
-import "dotenv/config";
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+import { Connection } from 'typeorm';
+import createConnection from '../database/index';
+import 'dotenv/config';
 
-async function dropDatabase() {
-  const client = new Client({
-    connectionString: process.env.BD_URL_TEST,
-  });
+class DropDatabase {
+  public static async run(): Promise<string> {
+    const connection = await createConnection();
+    console.log('\n== [Database connection] ==');
 
-  await client.connect();
-  await client.query("DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC");
-  await client.end();
-  return process.env.BD_TEST_DATABASE || "";
+    await this.queryDropTables(connection);
+    console.log('\n== DROP TABLES SUCESSFULLY ==');
+
+    await connection.close();
+    console.log('\n== CONNECTION DATABASE CLOSE ==\n');
+
+    return process.env.BD_DATABASE_TEST || '';
+  }
+
+  private static async queryDropTables(connection: Connection): Promise<void> {
+    await connection.query('SET FOREIGN_KEY_CHECKS = 0;');
+
+    const listTables: { table_name: string }[] = await connection.query(
+      `SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.BD_DATABASE_TEST}'`,
+    );
+    const listTableNames = listTables.map(table => table.table_name);
+
+    for (const table of listTableNames) {
+      await connection.query(`DROP TABLE ${process.env.BD_DATABASE_TEST}.${table}`);
+      console.log(` * drop table: ${table}`);
+    }
+
+    await connection.query('SET FOREIGN_KEY_CHECKS = 1;');
+  }
 }
 
-dropDatabase()
-  .then((db: string) => console.log(`Test database ${db} deleted successfully`))
-  .catch((err) => console.log("Error: ", err));
+DropDatabase.run();
 ```
 
 - Para cada arquivo de teste de integração será necessário que antes de executar todos os teste daquele arquivo primeiramente seja criado a conexão com o banco de dados, e após a execução de todos os testes essa conexão seja encerrada. Segue um exemplo da configuração de um arquivo de teste de integração:
