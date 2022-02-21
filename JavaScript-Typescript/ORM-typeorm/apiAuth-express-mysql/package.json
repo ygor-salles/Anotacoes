@@ -10,7 +10,7 @@
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "pretest": "set NODE_ENV=test&&ts-node-dev src/scripts/Seeders.ts",
     "test": "set NODE_ENV=test&&jest",
-    "posttest": "ts-node-dev src/scripts/afterAllTests.ts",
+    "posttest": "set NODE_ENV=test&&ts-node-dev src/scripts/afterAllTests.ts",
     "seed": "ts-node-dev src/scripts/Seeders.ts",
     "clean": "ts-node-dev src/scripts/afterAllTests.ts"
   },

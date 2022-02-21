@@ -5,17 +5,20 @@ import createConnection from '../database/index';
 import 'dotenv/config';
 
 class DropDatabase {
-  public static async run(): Promise<string> {
-    const connection = await createConnection();
-    console.log('\n== [Database connection] ==');
+  public static async run(): Promise<void> {
+    if (process.env.NODE_ENV === 'test') {
+      const connection = await createConnection();
+      console.log('\n== [Database connection] ==');
 
-    await this.queryDropTables(connection);
-    console.log('\n== DROP TABLES SUCESSFULLY ==');
+      await this.queryDropTables(connection);
+      console.log('\n== DROP TABLES SUCESSFULLY ==');
 
-    await connection.close();
-    console.log('\n== CONNECTION DATABASE CLOSE ==\n');
-
-    return process.env.BD_DATABASE_TEST || '';
+      await connection.close();
+      console.log('\n== CONNECTION DATABASE CLOSE ==\n');
+    }
+    else {
+      console.log('Environment variable must be test');
+    }
   }
 
   private static async queryDropTables(connection: Connection): Promise<void> {
