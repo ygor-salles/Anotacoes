@@ -1058,6 +1058,10 @@ web: npm start
 ```
 ---
 
+- Um exemplo completo desse projeto se encontra em: https://github.com/ygor-salles/Anotacoes/tree/master/JavaScript-Typescript/ORM-typeorm/apiAuth-express-mysql
+
+---
+
 ## Comandos básicos para migrations
 
 - Criando uma migration:
