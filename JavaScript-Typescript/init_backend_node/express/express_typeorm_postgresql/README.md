@@ -760,8 +760,8 @@ yarn add @types/pg -D
     "dev": "ts-node-dev --files --transpile-only --ignore-watch node_modules src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "pretest": "set NODE_ENV=test&&ts-node-dev src/scripts/Seeders.ts",
-    "test": "jest",
-    "posttest": "ts-node-dev src/scripts/afterAllTests.ts",
+    "test": "set NODE_ENV=test&&jest",
+    "posttest": "set NODE_ENV=test&&ts-node-dev src/scripts/afterAllTests.ts",
     "seed": "ts-node-dev src/scripts/Seeders.ts",
     "clean": "ts-node-dev src/scripts/afterAllTests.ts"
  },
@@ -926,8 +926,8 @@ describe('Users', () => {
     "dev": "ts-node-dev --files --transpile-only --ignore-watch node_modules src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "pretest": "set NODE_ENV=test&&ts-node-dev src/scripts/Seeders.ts",
-    "test": "jest",
-    "posttest": "ts-node-dev src/scripts/afterAllTests.ts",
+    "test": "set NODE_ENV=test&&jest",
+    "posttest": "set NODE_ENV=test&&ts-node-dev src/scripts/afterAllTests.ts",
     "seed": "ts-node-dev src/scripts/Seeders.ts",
     "clean": "ts-node-dev src/scripts/afterAllTests.ts"
   },
