@@ -228,7 +228,7 @@ require("dotenv").config();
 module.exports = {
   type: "mysql",
   host: "localhost",
-  port: process.env.BD_PORT || 3306,
+  port: +process.env.BD_PORT || 3306,
   username: process.env.BD_USERNAME,
   password: process.env.BD_PASSWORD,
   database: process.env.BD_DATABASE,
