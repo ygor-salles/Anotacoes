@@ -383,9 +383,9 @@ app.listen(process.env.PORT || 4000, () =>
 
 - Note que nas configurações acima há um atributo `[typescript]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-a do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto.
 
-- Verificar também se nesse arquivo JSON de configuração, o atributo `"editor.formatOnSave"` está setado para true. O mesmo deve estar setado para true para que quando for salvar o seu código typescript, automaticamente formate o código para o padrão eslint prettier configurado. Após isso, salvar as alterações e fechar o arquivo `settings.json` do seu VSCode
+- Verificar também se nesse arquivo JSON de configuração, o atributo `"editor.formatOnSave"` está setado para true. O mesmo deve estar setado para true para que quando for salvar o seu código typescript, automaticamente formate o código para o padrão eslint prettier configurado.
 
-- Outro atributo importante que deve estar nesse aquivo `settings.json` é o `"files.eol: "\n"` e `"diffEditor.ignoreTrimWhitespace": false`, eles devem estar nesse arquivo para que os arquivos typescript do projeto estejam no formato LF
+- Outro atributo importante que deve estar nesse aquivo `settings.json` é o `"files.eol: "\n"` e `"diffEditor.ignoreTrimWhitespace": false`, eles devem estar nesse arquivo para que os arquivos typescript do projeto estejam no formato LF. Após isso, salvar as alterações e fechar o arquivo `settings.json` do seu VSCode
 
 - Clicar com o direito do mouse na raiz do projeto e selecionar a opção `Generate .editorconfig`. Será gerado um arquivo com o nome `.editorconfig` na raiz do projeto, nele é setado as configurações de formatação como espaçamento das identações de código. Aconselhado deixar as configurações do `.editorconfig` da seguinte forma:
 
