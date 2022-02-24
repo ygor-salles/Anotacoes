@@ -753,8 +753,9 @@ createConnection()
     );
   });
 ```
+- Deve-se criar um banco local no container do docker com o nome definido na variavel de ambiente `BD_DATABASE_TEST` para rodar os testes no banco de teste. Pode ser feito direto pelo `dbeaver`
 
-- `package.json`: no objeto scripts em package.json adicionar o atributo pretest que será o script utilizado antes da realização dos testes e o posttest que será o script utilizado após os testes.
+- `package.json`: no objeto scripts em package.json adicionar o atributo pretest que será o script utilizado antes da realização dos testes e o posttest que será o script utilizado após os testes. Para executar os testes no sistema operacional windows, deve ser setado dentro de script as seguintes configs:
 
 ```json
 "scripts": {
@@ -763,6 +764,20 @@ createConnection()
     "pretest": "set NODE_ENV=test&&ts-node-dev src/scripts/Seeders.ts",
     "test": "set NODE_ENV=test&&jest",
     "posttest": "set NODE_ENV=test&&ts-node-dev src/scripts/afterAllTests.ts",
+    "seed": "ts-node-dev src/scripts/Seeders.ts",
+    "clean": "ts-node-dev src/scripts/afterAllTests.ts"
+ },
+```
+
+- Para SO linux ou MAC, deve ser:
+
+```json
+"scripts": {
+    "dev": "ts-node-dev --files --transpile-only --ignore-watch node_modules src/server.ts",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "pretest": "NODE_ENV=test ts-node-dev src/scripts/Seeders.ts",
+    "test": "NODE_ENV=test jest",
+    "posttest": "NODE_ENV=test ts-node-dev src/scripts/afterAllTests.ts",
     "seed": "ts-node-dev src/scripts/Seeders.ts",
     "clean": "ts-node-dev src/scripts/afterAllTests.ts"
  },
