@@ -24,7 +24,7 @@ yarn
 ### 4 - Deletar todas as importações dentro de `App.tsx`, e todo o conteúdo da função App deixando apenas
 
 ```tsx
-function App() {
+export function App() {
   return <h1>Hellow world</h1>;
 }
 ```
