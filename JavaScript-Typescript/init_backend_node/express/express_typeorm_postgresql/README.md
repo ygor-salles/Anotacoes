@@ -796,6 +796,9 @@ class SeederRun {
 
         await DataSeed.createUsers();
         console.log('\n== [Seeders run successfully] ==\n');
+        
+        await connection.close();
+        console.log('\n== [Connection close] ==\n');
       } catch (error) {
         console.log('\nError:', error);
       }
