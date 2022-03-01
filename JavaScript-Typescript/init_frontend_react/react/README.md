@@ -157,7 +157,7 @@ yarn eslint --init
 - `What format do you want your config file to be in? ...`: `JSON`
 - `Would you like to install them now with npm?`: `Yes`
 
-- Como na última escolha `Would you like to install them now with npm?` clicamos em sim e estamos utilizando o projeto com o gerenaciador `yarn`, será necessário remover os arquivos `package-lock.json` e `yarn.lock` do projeto
+- Como na última escolha `Would you like to install them now with npm?` clicamos em sim e estamos utilizando o projeto com o gerenaciador `yarn`, será necessário remover os arquivos `package-lock.json` do projeto
 
 - Após remover esses dois arquivos, executar o comando:
 
