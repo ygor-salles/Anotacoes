@@ -53,3 +53,119 @@ export function App() {
 ### OBS:
 
 - Caso utilize variáveis de ambiente no projeto, utilize sempre com a nomeclatura `REACT_APP` na frente. Exemplo ao utilizar uma variavel de `.env`: `process.env.REACT_APP_BASE_URL`
+
+---
+
+## Adicionando ESLINT + PRETTIER para padronização de código
+
+- Essa etapa é opcional, para caso queira deixar o seu código padronizado ou até mesmo para que várias pessoas desenvolvam seguindo o mesmo padrão de formatação no typescript tais  como: usar ou não usar ponto e vírgula, quebra de linhas, etc. 
+- Caso queira adicionar o prettier e eslint no seu projeto siga as seguintes etapas:
+- Instalar no VSCode as extensões `Eslint`, `Prettier` e `EditorConfig for VS Code`:
+
+<img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/extens%C3%B5es.PNG" heigth="30%" width="30%" />
+
+- Verificar se possui alguma formatação padrão em seu VSCode para códigos em typescript, o mesmo pode ser acessado pelo windows com `CTRL+SHIFT+P`, `Preferências: Abrir configurações (JSON)`. Abaixo segue um exemplo do arquivo de config do VSCode:
+
+```json
+{
+  "python.languageServer": "Pylance",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "angular.experimental-ivy": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript"],
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": false
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[css]": {
+    "editor.defaultFormatter": "aeschli.vscode-css-formatter"
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.formatOnSave": true,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "files.eol": "\n",
+  "diffEditor.ignoreTrimWhitespace": false
+}
+```
+
+- Note que nas configurações acima há um atributo `[typescript]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-a do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto.
+
+- Verificar também se nesse arquivo JSON de configuração, o atributo `"editor.formatOnSave"` está setado para true. O mesmo deve estar setado para true para que quando for salvar o seu código typescript, automaticamente formate o código para o padrão eslint prettier configurado.
+
+- Outro atributo importante que deve estar nesse aquivo `settings.json` é o `"files.eol: "\n"` e `"diffEditor.ignoreTrimWhitespace": false`, eles devem estar nesse arquivo para que os arquivos typescript do projeto estejam no formato LF. Após isso, salvar as alterações e fechar o arquivo `settings.json` do seu VSCode
+
+- Clicar com o direito do mouse na raiz do projeto e selecionar a opção `Generate .editorconfig`. Será gerado um arquivo com o nome `.editorconfig` na raiz do projeto, nele é setado as configurações de formatação como espaçamento das identações de código. Aconselhado deixar as configurações do `.editorconfig` da seguinte forma:
+
+```.editorconfig
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = false
+```
+
+- Instalar o eslint no projeto em ambiente de desenvolvimento:
+
+```bash
+yarn add -D eslint
+```
+- Inicializando a configuração do eslint:
+
+```bash
+yarn eslint --init
+```
+
+- Logo após rodar esse comando será feito algumas perguntas para inicializar a configuração eslint, a configuração é opcional, abaixo segue a configuração que utilizo:
+- `How would you like to use ESLint?`: `To check sintax, find problems, and enforce code styles`
+- `What type of modules does your project use?`: `JavaScript modules (import/export)`
+- `Wich framework does your project use?`: `React`
+- `Does your project use TypeScript`: `Yes`
+- `Where does your code run? ...`: `* browser`
+- `How would you like to define a style for you project? ...`: `Use a popular style guide`
+- `Wich style guide do you want to follow? ...`: `Airbnb: https://github.com/airbnb/javascript`
+- `What format do you want your config file to be in? ...`: `JSON`
+- `Would you like to install them now with npm?`: `Yes`
+
+- Como na última escolha `Would you like to install them now with npm?` clicamos em sim e estamos utilizando o projeto com o gerenaciador `yarn`, será necessário remover os arquivos `package-lock.json` e `yarn.lock` do projeto
+
+- Após remover esses dois arquivos, executar o comando:
+
+```bash
+yarn
+```
+
+- Instalar as dependencias do eslint para resolver padrões de importações em ambiente de desenvolvimento:
+```bash
+yarn add eslint-plugin-import-helpers eslint-import-resolver-typescript -D
+```
