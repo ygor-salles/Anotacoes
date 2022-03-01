@@ -23,7 +23,7 @@ yarn create react-app iniciando-react --template typescript
 
 ### 3 - Em `public/index.html` dentro da tag head deixar somente: charset, viewport, title
 
-### 4 - Em `src/index.html` deixar somente:
+### 4 - Em `src/index.tsx` deixar somente:
 
 ```tsx
 import React from 'react';
@@ -41,7 +41,9 @@ ReactDOM.render(
 ### 5 - Deletar todas as importações dentro de `App.tsx`, e todo o conteúdo da função App deixando apenas
 
 ```tsx
-function App() {
+import React from "react";
+
+export function App() {
   return <h1>Hellow world</h1>;
 }
 ```
