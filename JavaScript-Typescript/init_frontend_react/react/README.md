@@ -169,3 +169,135 @@ yarn
 ```bash
 yarn add eslint-plugin-import-helpers eslint-import-resolver-typescript -D
 ```
+
+- Instalar as dependencias do prettier em ambiente de desenvolvimento:
+```bash
+yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
+```
+
+- Após a instalação dessas dependências será gerado um arquivo na raiz do projeto chamado de `.eslintrc.json`, nele serão setadas todas as configurações de formatação do código e o que deve ou não ser usado como padrão como boas práticas de código. A personalização fica a critério, abaixo segue a personalização de código que utilizo no arquivo `.eslintrc.json`
+
+```json
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "jest": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+        "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint",
+        "eslint-plugin-import-helpers",
+        "prettier"
+    ],
+    "rules": {
+        "linebreak-style":"off",
+        "camelcase": "off",
+        "import/no-unresolved": "error",
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": "interface",
+                "format": [
+                    "PascalCase"
+                ],
+                "custom": {
+                    "regex": "^I[A-Z]",
+                    "match": true
+                }
+            }
+        ],
+        "class-methods-use-this": "off",
+        "import/prefer-default-export": "off",
+        "no-shadow": "off",
+        "no-console": "off",
+        "no-useless-constructor": "off",
+        "no-empty-function": "off",
+        "lines-between-class-members": "off",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "ts": "never",
+                "tsx": "never"
+            }
+        ],
+        "import-helpers/order-imports": [
+            "warn",
+            {
+                "newlinesBetween": "always",
+                "groups": [
+                    "module",
+                    "/^@shared/",
+                    [
+                        "parent",
+                        "sibling",
+                        "index"
+                    ]
+                ],
+                "alphabetize": {
+                    "order": "asc",
+                    "ignoreCase": true
+                }
+            }
+        ],
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": [
+                    "**/*.spec.js"
+                ]
+            }
+        ],
+        "prettier/prettier": "error",
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [
+                    ".jsx",
+                    ".tsx"
+                ]
+            }
+        ],
+        "react/react-in-jsx-scope": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": [
+            "error"
+        ]
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {}
+        }
+    }
+}
+```
+
+- Você pode escolher quais tipos de arquivos e diretórios que o eslint+prettier podem ignorar para realizar a formatação, pois a intenção é que o eslint+prettier só formatem os códigos de desenvolvimento. Para isso crie dois arquivos na raíz do projeto `.eslintignore` e `.prettierignore` passando as seguintes configurações:
+
+```.eslintignore
+# Ignore artifacts:
+build
+dist
+coverage
+**/*.js
+node_modules
+assets
+```
+
+- Pronto basta recarregar o VSCode que as configurações do prettier+eslint serão aplicadas ao seu projeto.
