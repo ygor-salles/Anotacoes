@@ -173,7 +173,9 @@ yarn add prisma -D
 yarn prisma init
 ```
 
-- Nas configurações do VSCode, em `settings.json` adicionar o atributo:
+- Instalar as extensões `Prisma` e `Prisma - Insider` no VSCode.
+
+- Nas configurações do VSCode, em `settings.json` adicionar o atributo (O mesmo pode ser acessado no VSCode do windows com `CTRL+SHIFT+P`, `Preferências: Abrir Configurações (JSON)`):
 
 ```json
 "[prisma]": {
