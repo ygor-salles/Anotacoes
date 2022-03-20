@@ -43,7 +43,7 @@ ReactDOM.render(
 ```tsx
 import React from "react";
 
-export function App() {
+export default function App() {
   return <h1>Hellow world</h1>;
 }
 ```
