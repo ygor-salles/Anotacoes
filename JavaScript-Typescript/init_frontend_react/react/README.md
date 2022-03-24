@@ -288,6 +288,20 @@ yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
 }
 ```
 
+- Criar um arquivo na raiz do projeto com o nome `.prettierrc`, nele são definido as configs do prettier para formatação de código. Como padrão utilizo esta configuração:
+
+```json
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "avoid",
+  "endOfLine": "auto",
+  "printWidth": 100
+}
+```
+
+- O atributo `singleQuote` defini se será utilizado aspas simples ou aspas duplas na parte de TS do react, nas tags HTML continuarão sendo usadas aspas duplas. O atributo `printWidth` defini quantos caracteres uma linha de código pode chegar, passando desse valor o prettier quebrará a linha automaticamente no autosave.
+
 - Você pode escolher quais tipos de arquivos e diretórios que o eslint+prettier podem ignorar para realizar a formatação, pois a intenção é que o eslint+prettier só formatem os códigos de desenvolvimento. Para isso crie dois arquivos na raíz do projeto `.eslintignore` e `.prettierignore` passando as seguintes configurações:
 
 ```.eslintignore
