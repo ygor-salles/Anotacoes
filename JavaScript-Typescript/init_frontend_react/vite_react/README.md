@@ -50,7 +50,7 @@ export default function App() {
 
 <img src="https://raw.githubusercontent.com/ygor-salles/Anotacoes/master/assets/extens%C3%B5es.PNG" heigth="30%" width="30%" />
 
-- Verificar se possui alguma formatação padrão em seu VSCode para códigos em typescript, o mesmo pode ser acessado pelo windows com `CTRL+SHIFT+P`, `Preferências: Abrir configurações (JSON)`. Abaixo segue um exemplo do arquivo de config do VSCode:
+- Verificar se possui alguma formatação padrão em seu VSCode para códigos em typescript com arquivos de extensões .ts e .tsx, o mesmo pode ser acessado pelo windows com `CTRL+SHIFT+P`, `Preferências: Abrir configurações (JSON)`. Abaixo segue um exemplo do arquivo de config do VSCode:
 
 ```json
 {
@@ -93,12 +93,20 @@ export default function App() {
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
   "files.eol": "\n",
   "diffEditor.ignoreTrimWhitespace": false
 }
 ```
 
-- Note que nas configurações acima há um atributo `[typescript]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-a do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto.
+- Note que nas configurações acima há dois atributos `[typescript]` e `[typescriptreact]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-as do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto.
+
+- É necessário que nesse arquivo de configuração tenha: 
+`"editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+ },`
 
 - Verificar também se nesse arquivo JSON de configuração, o atributo `"editor.formatOnSave"` está setado para true. O mesmo deve estar setado para true para que quando for salvar o seu código typescript, automaticamente formate o código para o padrão eslint prettier configurado.
 
