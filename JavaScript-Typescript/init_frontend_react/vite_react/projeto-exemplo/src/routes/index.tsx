@@ -1,21 +1,16 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes as Switch,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import { Dashboard, Login } from '../pages';
 
-export function Routes() {
+export function Router() {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/entrar" element={<Login />} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/pagina-inicial" element={<Dashboard />} />
 
         <Route path="*" element={<Navigate to="/pagina-inicial" />} />
-      </Switch>
+      </Routes>
     </BrowserRouter>
   );
 }
