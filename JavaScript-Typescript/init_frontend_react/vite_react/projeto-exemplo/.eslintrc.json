@@ -29,6 +29,9 @@
       "linebreak-style":"off",
       "camelcase": "off",
       "import/no-unresolved": "error",
+      "react/jsx-no-constructed-context-values": "off",
+      "react/jsx-props-no-spreading" : "off",
+      "react/prop-types": "off",
       "@typescript-eslint/naming-convention": [
           "error",
           {
@@ -45,7 +48,6 @@
       "class-methods-use-this": "off",
       "import/prefer-default-export": "off",
       "no-shadow": "off",
-      "no-console": "off",
       "no-useless-constructor": "off",
       "no-empty-function": "off",
       "lines-between-class-members": "off",

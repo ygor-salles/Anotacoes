@@ -26,15 +26,17 @@ yarn create react-app iniciando-react --template typescript
 ### 4 - Em `src/index.tsx` deixar somente:
 
 ```tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-ReactDOM.render(
-    <React.StricMode>
-        <App />
-    </React.StricMode>,
-    document.getElementById('root');
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
 ```
 
@@ -58,7 +60,7 @@ export default function App() {
 
 ## Adicionando ESLINT + PRETTIER para padronização de código
 
-- Essa etapa é opcional, para caso queira deixar o seu código padronizado ou até mesmo para que várias pessoas desenvolvam seguindo o mesmo padrão de formatação no typescript tais  como: usar ou não usar ponto e vírgula, quebra de linhas, etc. 
+- Essa etapa é opcional, para caso queira deixar o seu código padronizado ou até mesmo para que várias pessoas desenvolvam seguindo o mesmo padrão de formatação no typescript tais como: usar ou não usar ponto e vírgula, quebra de linhas, etc.
 - Caso queira adicionar o prettier e eslint no seu projeto siga as seguintes etapas:
 - Instalar no VSCode as extensões `Eslint`, `Prettier` e `EditorConfig for VS Code`:
 
@@ -117,10 +119,8 @@ export default function App() {
 
 - Note que nas configurações acima há dois atributos `[typescript]` e `[typescriptreact]` setado no vscode com uma configuração padrão para formatação de códigos typescript. Remova-as do JSON e salve, para que possa ser utilizado o padrão eslint e prettier que será configurado posteriormente em seu projeto.
 
-- É necessário que nesse arquivo de configuração tenha: 
-`"editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
- },`
+- É necessário que nesse arquivo de configuração tenha:
+  `"editor.codeActionsOnSave": { "source.fixAll.eslint": true },`
 
 - Verificar também se nesse arquivo JSON de configuração, o atributo `"editor.formatOnSave"` está setado para true. O mesmo deve estar setado para true para que quando for salvar o seu código typescript, automaticamente formate o código para o padrão eslint prettier configurado.
 
@@ -148,6 +148,7 @@ insert_final_newline = false
 ```bash
 yarn add -D eslint
 ```
+
 - Inicializando a configuração do eslint:
 
 ```bash
@@ -174,11 +175,13 @@ yarn
 ```
 
 - Instalar as dependencias do eslint para resolver padrões de importações em ambiente de desenvolvimento:
+
 ```bash
 yarn add eslint-plugin-import-helpers eslint-import-resolver-typescript -D
 ```
 
 - Instalar as dependencias do prettier em ambiente de desenvolvimento:
+
 ```bash
 yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
 ```
@@ -187,112 +190,97 @@ yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
 
 ```json
 {
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "jest": true
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": [
-        "plugin:react/recommended",
-        "airbnb",
-        "plugin:@typescript-eslint/recommended",
-        "prettier",
-        "plugin:prettier/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react",
-        "@typescript-eslint",
-        "eslint-plugin-import-helpers",
-        "prettier"
-    ],
-    "rules": {
-        "linebreak-style":"off",
-        "camelcase": "off",
-        "import/no-unresolved": "error",
-        "@typescript-eslint/naming-convention": [
-            "error",
-            {
-                "selector": "interface",
-                "format": [
-                    "PascalCase"
-                ],
-                "custom": {
-                    "regex": "^I[A-Z]",
-                    "match": true
-                }
-            }
-        ],
-        "class-methods-use-this": "off",
-        "import/prefer-default-export": "off",
-        "no-shadow": "off",
-        "no-console": "off",
-        "no-useless-constructor": "off",
-        "no-empty-function": "off",
-        "lines-between-class-members": "off",
-        "import/extensions": [
-            "error",
-            "ignorePackages",
-            {
-                "ts": "never",
-                "tsx": "never"
-            }
-        ],
-        "import-helpers/order-imports": [
-            "warn",
-            {
-                "newlinesBetween": "always",
-                "groups": [
-                    "module",
-                    "/^@shared/",
-                    [
-                        "parent",
-                        "sibling",
-                        "index"
-                    ]
-                ],
-                "alphabetize": {
-                    "order": "asc",
-                    "ignoreCase": true
-                }
-            }
-        ],
-        "import/no-extraneous-dependencies": [
-            "error",
-            {
-                "devDependencies": [
-                    "**/*.spec.js"
-                ]
-            }
-        ],
-        "prettier/prettier": "error",
-        "react/jsx-filename-extension": [
-            1,
-            {
-                "extensions": [
-                    ".jsx",
-                    ".tsx"
-                ]
-            }
-        ],
-        "react/react-in-jsx-scope": "off",
-        "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": [
-            "error"
-        ]
-    },
-    "settings": {
-        "import/resolver": {
-            "typescript": {}
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "eslint-plugin-import-helpers",
+    "prettier"
+  ],
+  "rules": {
+    "linebreak-style": "off",
+    "camelcase": "off",
+    "import/no-unresolved": "error",
+    "react/jsx-no-constructed-context-values": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^I[A-Z]",
+          "match": true
         }
+      }
+    ],
+    "class-methods-use-this": "off",
+    "import/prefer-default-export": "off",
+    "no-shadow": "off",
+    "no-useless-constructor": "off",
+    "no-empty-function": "off",
+    "lines-between-class-members": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": ["module", "/^@shared/", ["parent", "sibling", "index"]],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        }
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/*.spec.js"]
+      }
+    ],
+    "prettier/prettier": "error",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".jsx", ".tsx"]
+      }
+    ],
+    "react/react-in-jsx-scope": "off",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
     }
+  }
 }
 ```
 
@@ -308,7 +296,7 @@ yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
 }
 ```
 
-- O atributo `singleQuote` defini se será utilizado aspas simples ou aspas duplas na parte de TS do react, nas tags HTML continuarão sendo usadas aspas duplas. O atributo `printWidth` defini quantos caracteres uma linha de código pode chegar, passando desse valor o prettier quebrará a linha automaticamente no autosave. 
+- O atributo `singleQuote` defini se será utilizado aspas simples ou aspas duplas na parte de TS do react, nas tags HTML continuarão sendo usadas aspas duplas. O atributo `printWidth` defini quantos caracteres uma linha de código pode chegar, passando desse valor o prettier quebrará a linha automaticamente no autosave.
 
 - Você pode escolher quais tipos de arquivos e diretórios que o eslint+prettier podem ignorar para realizar a formatação, pois a intenção é que o eslint+prettier só formatem os códigos de desenvolvimento. Para isso crie dois arquivos na raíz do projeto `.eslintignore` e `.prettierignore` passando as seguintes configurações:
 
@@ -323,4 +311,3 @@ assets
 ```
 
 - Pronto basta recarregar o VSCode que as configurações do prettier+eslint serão aplicadas ao seu projeto.
-

@@ -11,9 +11,7 @@ export function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleNavigateDashboard = (
-    e: React.FormEvent<HTMLFormElement>,
-  ): void => {
+  const handleNavigateDashboard = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (email && password) {
       navigate('/pagina-inicial');
@@ -29,9 +27,7 @@ export function Login() {
         <input
           type="email"
           value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
         />
       </label>
       <label>
@@ -39,9 +35,7 @@ export function Login() {
         <input
           type="password"
           value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
         />
       </label>
       <Button type="submit">Logar</Button>

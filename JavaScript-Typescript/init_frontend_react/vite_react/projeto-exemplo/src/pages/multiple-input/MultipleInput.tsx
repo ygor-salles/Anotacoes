@@ -107,30 +107,15 @@ export function MyForm() {
           <strong>De qual lado da aplicação você desenvolve?</strong>
         </label>
         <label>
-          <input
-            type="radio"
-            name="stack"
-            value="frontend"
-            onChange={handleChange}
-          />
+          <input type="radio" name="stack" value="frontend" onChange={handleChange} />
           Front-end
         </label>
         <label>
-          <input
-            type="radio"
-            name="stack"
-            value="backend"
-            onChange={handleChange}
-          />
+          <input type="radio" name="stack" value="backend" onChange={handleChange} />
           Back-end
         </label>
         <label>
-          <input
-            type="radio"
-            name="stack"
-            value="fullstack"
-            onChange={handleChange}
-          />
+          <input type="radio" name="stack" value="fullstack" onChange={handleChange} />
           Fullstack
         </label>
       </FlexColumn>
@@ -152,21 +137,11 @@ export function MyForm() {
           <label> JavaScript</label>
         </div>
         <div>
-          <input
-            type="checkbox"
-            name="tecnologia4"
-            value="PHP"
-            onChange={handleChangeCheckBox}
-          />
+          <input type="checkbox" name="tecnologia4" value="PHP" onChange={handleChangeCheckBox} />
           <label> PHP</label>
         </div>
         <div>
-          <input
-            type="checkbox"
-            name="tecnologia5"
-            value="C#"
-            onChange={handleChangeCheckBox}
-          />
+          <input type="checkbox" name="tecnologia5" value="C#" onChange={handleChangeCheckBox} />
           <label> C#</label>
         </div>
         <div>
@@ -179,12 +154,7 @@ export function MyForm() {
           <label> Python</label>
         </div>
         <div>
-          <input
-            type="checkbox"
-            name="tecnologia7"
-            value="Java"
-            onChange={handleChangeCheckBox}
-          />
+          <input type="checkbox" name="tecnologia7" value="Java" onChange={handleChangeCheckBox} />
           <label> Java</label>
         </div>
       </FlexLine>
